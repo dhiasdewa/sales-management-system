@@ -138,3 +138,7 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://sales-management-system-production-865e.up.railway.app/",
+]
