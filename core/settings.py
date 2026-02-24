@@ -128,3 +128,13 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 AUTH_USER_MODEL = "users.User"
+
+import os
+
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = ["*"]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

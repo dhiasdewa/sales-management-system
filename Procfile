@@ -1,1 +1,1 @@
-web: gunicorn erms_project.wsgi
+web: gunicorn core.wsgi
