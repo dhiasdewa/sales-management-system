@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}HR Dashboard{% endblock %}
+
+{% block content %}
+<h2>HR Dashboard 👨‍💼</h2>
+
+<a href="{% url 'logout' %}" class="btn btn-danger mb-3">Logout</a>
+
+<h4>Recent Activity</h4>
+<form method="get" action="{% url 'export_sales' %}" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="date" name="start_date" class="form-control" required>
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="end_date" class="form-control" required>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-success">
+            Export by Date 📊
+        </button>
+    </div>
+</form>
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>🔥 Top 3 Selling Products</h4>
+        <ol>
+            {% for product in top_products %}
+                <li>
+                    <strong>{{ product.product__name }}</strong>
+                    - {{ product.total_quantity }} sold
+                </li>
+            {% empty %}
+                <li>No sales data yet</li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+<a href="{% url 'export_sales' %}" class="btn btn-success mb-3">
+    Export Sales to Excel 📊
+</a>
+<a href="{% url 'export_top_products' %}" class="btn btn-primary mb-3">
+    Export Top Selling Products 🚀
+</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Action</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.user.username }}</td>
+            <td>{{ log.action }}</td>
+            <td>{{ log.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No activity yet</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>Low Stock Alert ⚠</h4>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in low_stock %}
+        <tr class="table-danger">
+            <td>{{ product.name }}</td>
+            <td>{{ product.stock }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No low stock items</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card text-bg-primary mb-3">
+            <div class="card-body">
+                <h5>Total Products</h5>
+                <h3>{{ total_products }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-success mb-3">
+            <div class="card-body">
+                <h5>Total Sales</h5>
+                <h3>{{ total_sales }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-warning mb-3">
+            <div class="card-body">
+                <h5>Total Purchase</h5>
+                <h3>{{ total_purchase }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-dark mb-3">
+            <div class="card-body">
+                <h5>Total Revenue</h5>
+                <h3>Rp {{ total_revenue }}</h3>
+            </div>
+        </div>
+    </div>
+
+<h4 class="mt-4">Sales Analytics 📈</h4>
+<canvas id="salesChart" height="100"></canvas>
+
+<h4 class="mt-4">Revenue Analytics 💰</h4>
+<canvas id="revenueChart" height="100"></canvas> 
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th>Join Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp.user.username }}</td>
+            <td>{{ emp.position }}</td>
+            <td>{{ emp.department }}</td>
+            <td>{{ emp.join_date }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No employees found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const dates = JSON.parse('{{ chart_dates|default:"[]"|escapejs }}');
+    const salesData = JSON.parse('{{ sales_chart_data|default:"[]"|escapejs }}');
+    const revenueData = JSON.parse('{{ revenue_chart_data|default:"[]"|escapejs }}');
+
+    new Chart(document.getElementById('salesChart'), {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Total Sales',
+                data: salesData,
+                borderWidth: 2
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Total Revenue',
+                data: revenueData,
+                borderWidth: 2
+            }]
+        }
+    });
+</script>
+{% endblock %}

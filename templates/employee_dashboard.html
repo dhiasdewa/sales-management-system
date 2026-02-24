@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Employees Dashboard{% endblock %}
+
+{% block content %}
+<h2>Welcome {{ request.user.username }} 👋</h2>
+<a href="{% url 'add_sale' %}" class="btn btn-success mb-3">
+    + Add Sale
+</a>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h4>👤 Profile</h4>
+        <p><strong>Position:</strong> {{ employee.position }}</p>
+        <p><strong>Department:</strong> {{ employee.department }}</p>
+        <p><strong>Join Date:</strong> {{ employee.join_date }}</p>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h4>📊 My Performance</h4>
+        <p><strong>Total Items Sold:</strong> {{ total_quantity }}</p>
+        <p><strong>Total Revenue:</strong> Rp {{ total_revenue }}</p>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h4>🎯 Monthly Target</h4>
+        <p><strong>Target:</strong> Rp {{ employee.monthly_target }}</p>
+        <p><strong>This Month Revenue:</strong> Rp {{ monthly_revenue }}</p>
+
+        <div class="progress" style="height: 25px;">
+            <div class="progress-bar 
+                {% if progress >= 100 %}
+                    bg-success
+                {% else %}
+                    bg-info
+                {% endif %}"
+                role="progressbar"
+                style="width: {{ progress }}%;">
+                {{ progress }}%
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-body">
+        <h4>🧾 My Sales History</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.product.name }}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>Rp {{ sale.total_price }}</td>
+                    <td>{{ sale.date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No sales yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<a href="{% url 'logout' %}" class="btn btn-danger mt-3">Logout</a>
+{% endblock %}
