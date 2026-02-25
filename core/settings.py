@@ -133,9 +133,7 @@ import os
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+DEBUG = True  # sementara TRUE dulu
 
 ALLOWED_HOSTS = ["*"]
 
@@ -143,5 +141,4 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.up.railway.app",
 ]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
